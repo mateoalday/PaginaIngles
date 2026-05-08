@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenFluent AI — Master English Interviews</title>
+  <meta name="description" content="OpenFluent AI is the #1 platform for practicing English job interviews with real-time AI coaching and industry-specific question banks." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header id="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">🌐</span>
+      <div class="logo-stack">
+        <span class="logo-text">OpenFluent <span class="ai-tag">AI</span></span>
+        <span class="logo-sub">by OpenCinco</span>
+      </div>
+    </div>
+    <nav class="main-nav" id="main-nav">
+      <a href="#coach"         class="nav-link active" data-section="coach">🤖 Coach</a>
+      <a href="#questions"     class="nav-link"        data-section="questions">📋 Questions</a>
+      <a href="#pronunciation" class="nav-link"        data-section="pronunciation">🎙️ Pronunciation</a>
+      <a href="#listening"     class="nav-link"        data-section="listening">🎧 Listening</a>
+      <a href="#idioms"        class="nav-link"        data-section="idioms">💡 Idioms</a>
+      <a href="#speaking"      class="nav-link"        data-section="speaking">⏱️ Speaking</a>
+      <a href="#writing"       class="nav-link"        data-section="writing">✍️ Writing</a>
+      <a href="#quiz"          class="nav-link"        data-section="quiz">📝 Quiz</a>
+      <a href="#phrases"       class="nav-link"        data-section="phrases">💬 Phrases</a>
+      <a href="#pricing"       class="nav-link"        data-section="pricing">💎 Pricing</a>
+      <a href="#progress"      class="nav-link"        data-section="progress">📊 Progress</a>
+    </nav>
+    <div class="header-actions">
+      <button id="theme-toggle" class="icon-btn" title="Toggle theme">🌙</button>
+      <button id="menu-toggle"  class="icon-btn mobile-only" title="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🚀 The Future of Interview Prep</div>
+    <h1>Speak Like a Native<br><span class="gradient-text">Land the Job</span></h1>
+    <p class="hero-sub">The all-in-one AI platform to master professional English. Pronunciation, listening, writing, idioms, and AI coaching — all in one place.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num" id="stat-sessions">0</span><span class="stat-label">Sessions</span></div>
+      <div class="stat"><span class="stat-num">100+</span><span class="stat-label">Questions</span></div>
+      <div class="stat"><span class="stat-num" id="stat-streak">0</span><span class="stat-label">Day Streak 🔥</span></div>
+      <div class="stat"><span class="stat-num" id="stat-score">—</span><span class="stat-label">Best Score</span></div>
+    </div>
+    <div class="hero-modules">
+      <span class="module-pill">🤖 AI Coach</span>
+      <span class="module-pill">🎙️ Pronunciation</span>
+      <span class="module-pill">🎧 Listening</span>
+      <span class="module-pill">💡 Idioms</span>
+      <span class="module-pill">⏱️ Speaking Timer</span>
+      <span class="module-pill">✍️ Writing Templates</span>
+    </div>
+    <a href="#coach" class="btn-primary hero-cta" id="hero-start-btn">Start Practicing →</a>
+  </div>
+  <div class="hero-visual">
+    <div class="chat-preview">
+      <div class="chat-msg bot"><span class="avatar">🤖</span><p>Tell me about yourself and your background.</p></div>
+      <div class="chat-msg user"><span class="avatar">👤</span><p>I'm a software developer with 3 years of experience...</p></div>
+      <div class="chat-msg bot feedback"><span class="avatar">🤖</span><p>✅ Good start! Try adding a specific achievement with metrics.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- API KEY BANNER -->
+<div id="api-banner" class="api-banner">
+  <div class="api-banner-inner">
+    <span>🔑</span>
+    <span>Enter your <strong>Anthropic API key</strong> to unlock AI coaching features</span>
+    <div class="api-input-row">
+      <input type="password" id="api-key-input" placeholder="sk-ant-..." />
+      <button id="api-key-save" class="btn-primary small">Save Key</button>
+    </div>
+    <button id="api-banner-close" class="icon-btn small">✕</button>
+  </div>
+</div>
+
+<!-- SECTION 1 — AI COACH -->
+<section id="coach" class="section">
+  <div class="section-header">
+    <h2>🤖 AI Interview Coach</h2>
+    <p>Chat with your personal AI interviewer. Get real-time feedback on grammar, vocabulary, and structure.</p>
+  </div>
+  <div class="coach-layout">
+    <aside class="coach-config">
+      <div class="config-group">
+        <label>Level</label>
+        <div class="chip-group" id="level-chips">
+          <button class="chip active" data-value="beginner">Beginner</button>
+          <button class="chip"        data-value="intermediate">Intermediate</button>
+          <button class="chip"        data-value="advanced">Advanced</button>
+        </div>
+      </div>
+      <div class="config-group">
+        <label>Interview Type</label>
+        <div class="chip-group" id="type-chips">
+          <button class="chip active" data-value="general">General</button>
+          <button class="chip"        data-value="tech">Tech</button>
+          <button class="chip"        data-value="marketing">Marketing</button>
+          <button class="chip"        data-value="design">Design</button>
+          <button class="chip"        data-value="finance">Finance</button>
+        </div>
+      </div>
+      <div class="config-group">
+        <label>Features</label>
+        <label class="toggle-row"><input type="checkbox" id="tog-grammar" checked> Grammar corrections</label>
+        <label class="toggle-row"><input type="checkbox" id="tog-voice"   checked> Voice AI (TTS)</label>
+        <label class="toggle-row"><input type="checkbox" id="tog-star"    checked> STAR method feedback</label>
+        <label class="toggle-row"><input type="checkbox" id="tog-score"   checked> Score each answer</label>
+      </div>
+      <button id="new-session-btn" class="btn-secondary full-width">↺ New Session</button>
+      <div class="api-status" id="api-status">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">No API key</span>
+      </div>
+    </aside>
+    <div class="chat-window">
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-welcome">
+          <div class="welcome-icon">🎯</div>
+          <h3>Ready to practice?</h3>
+          <p>Configure your session on the left, then click <strong>Start Interview</strong> below.</p>
+        </div>
+      </div>
+      <div class="chat-typing" id="chat-typing" style="display:none">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="chat-input-area">
+        <textarea id="chat-input" placeholder="Type your answer here... (Shift+Enter for new line)" rows="2"></textarea>
+        <div class="chat-actions">
+          <button id="start-interview-btn" class="btn-primary">▶ Start Interview</button>
+          <button id="send-btn" class="btn-primary" style="display:none">Send ↑</button>
+          <button id="next-question-btn" class="btn-secondary" style="display:none">Next Question →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2 — QUESTION BANK -->
+<section id="questions" class="section">
+  <div class="section-header">
+    <h2>📋 Real Interview Questions</h2>
+    <p>100+ questions sourced from real interviews. Filter by category and practice any with the AI coach.</p>
+  </div>
+  <div class="questions-toolbar">
+    <div class="filter-tabs" id="q-filter-tabs">
+      <button class="filter-tab active" data-cat="all">All <span class="badge" id="badge-all">100</span></button>
+      <button class="filter-tab" data-cat="behavioral">Behavioral <span class="badge" id="badge-behavioral"></span></button>
+      <button class="filter-tab" data-cat="situational">Situational <span class="badge" id="badge-situational"></span></button>
+      <button class="filter-tab" data-cat="technical">Technical <span class="badge" id="badge-technical"></span></button>
+      <button class="filter-tab" data-cat="strength">Strengths/Weakness <span class="badge" id="badge-strength"></span></button>
+      <button class="filter-tab" data-cat="culture">Culture Fit <span class="badge" id="badge-culture"></span></button>
+    </div>
+    <input type="search" id="q-search" placeholder="🔍 Search questions..." class="search-input" />
+  </div>
+  <div class="questions-grid" id="questions-grid"></div>
+</section>
+
+<!-- NEW: SECTION 3 — PRONUNCIATION GUIDE -->
+<section id="pronunciation" class="section">
+  <div class="section-header">
+    <h2>🎙️ Pronunciation Guide</h2>
+    <p>Master the most mispronounced professional English words. Click any card to hear the syllable breakdown and practice tips.</p>
+  </div>
+  <div class="pron-filter" id="pron-filter">
+    <button class="filter-tab active" data-plevel="all">All Words</button>
+    <button class="filter-tab" data-plevel="easy">🟢 Easy</button>
+    <button class="filter-tab" data-plevel="medium">🟡 Medium</button>
+    <button class="filter-tab" data-plevel="hard">🔴 Hard</button>
+  </div>
+  <div class="pron-grid" id="pron-grid"></div>
+</section>
+
+<!-- NEW: SECTION 4 — LISTENING COMPREHENSION -->
+<section id="listening" class="section">
+  <div class="section-header">
+    <h2>🎧 Listening Comprehension</h2>
+    <p>Listen to expert interview answers read aloud. Test your comprehension with questions after each exercise.</p>
+  </div>
+  <div class="listening-tabs" id="listening-tabs">
+    <!-- Populated by JS -->
+  </div>
+  <div class="listening-container" id="listening-container">
+    <div class="listening-card" id="listening-card">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- NEW: SECTION 5 — IDIOMS DICTIONARY -->
+<section id="idioms" class="section">
+  <div class="section-header">
+    <h2>💡 Business Idioms Dictionary</h2>
+    <p>Learn the most common business idioms used in professional English. Know what native speakers really mean.</p>
+  </div>
+  <div class="idiom-filter" id="idiom-filter">
+    <button class="filter-tab active" data-ilevel="all">All Idioms</button>
+    <button class="filter-tab" data-ilevel="common">⭐ Common</button>
+    <button class="filter-tab" data-ilevel="intermediate">🔷 Intermediate</button>
+  </div>
+  <div class="idioms-grid" id="idioms-grid"></div>
+</section>
+
+<!-- NEW: SECTION 6 — SPEAKING TIMER / CHALLENGE -->
+<section id="speaking" class="section">
+  <div class="section-header">
+    <h2>⏱️ Speaking Challenges</h2>
+    <p>Practice speaking with timed challenges. Build confidence by hitting the right duration — a key interview skill.</p>
+  </div>
+  <div class="speaking-grid" id="speaking-grid"></div>
+  <div class="speaking-workspace" id="speaking-workspace" style="display:none">
+    <div class="speaking-header">
+      <button class="btn-secondary" id="back-to-challenges">← All Challenges</button>
+      <h3 id="challenge-title"></h3>
+    </div>
+    <div class="timer-display">
+      <div class="timer-ring">
+        <svg viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="54" class="timer-ring-bg"/>
+          <circle cx="60" cy="60" r="54" class="timer-ring-fill" id="timer-ring-fill"/>
+        </svg>
+        <div class="timer-text" id="timer-text">0:00</div>
+      </div>
+    </div>
+    <div class="challenge-prompt" id="challenge-prompt"></div>
+    <div class="challenge-tips" id="challenge-tips"></div>
+    <div class="challenge-controls">
+      <button class="btn-primary large" id="timer-start-btn">▶ Start Timer</button>
+      <button class="btn-secondary large" id="timer-reset-btn" style="display:none">↺ Reset</button>
+    </div>
+    <div class="sample-answer-toggle">
+      <button class="btn-secondary" id="show-sample-btn">👁️ Show Sample Answer</button>
+      <div class="sample-answer" id="sample-answer" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEW: SECTION 7 — WRITING TEMPLATES -->
+<section id="writing" class="section">
+  <div class="section-header">
+    <h2>✍️ Professional Writing Templates</h2>
+    <p>Ready-to-use templates for every stage of the job search. Click to copy and customize for your own use.</p>
+  </div>
+  <div class="writing-tabs" id="writing-tabs">
+    <!-- Populated by JS -->
+  </div>
+  <div class="writing-workspace" id="writing-workspace">
+    <div class="template-meta" id="template-meta"></div>
+    <div class="template-editor">
+      <div class="template-actions-top">
+        <span class="template-tip">💡 Replace all [bracketed] parts with your own information</span>
+        <button class="btn-primary small" id="copy-template-btn">📋 Copy Template</button>
+      </div>
+      <textarea class="template-textarea" id="template-textarea" readonly></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 8 — QUIZ -->
+<section id="quiz" class="section">
+  <div class="section-header">
+    <h2>📝 Interactive Quizzes</h2>
+    <p>Test your professional vocabulary, grammar, and situational phrases.</p>
+  </div>
+  <div class="quiz-tabs" id="quiz-tabs">
+    <button class="quiz-tab active" data-quiz="vocabulary">📚 Vocabulary</button>
+    <button class="quiz-tab"        data-quiz="grammar">✍️ Grammar</button>
+    <button class="quiz-tab"        data-quiz="phrases">🗣️ Phrases in Context</button>
+  </div>
+  <div class="quiz-container" id="quiz-container">
+    <div class="quiz-start-screen" id="quiz-start-screen">
+      <div class="quiz-start-icon">🧠</div>
+      <h3 id="quiz-start-title">Vocabulary Quiz</h3>
+      <p id="quiz-start-desc">10 questions on professional English vocabulary used in job interviews.</p>
+      <div class="quiz-meta">
+        <span>⏱️ ~5 min</span>
+        <span>❓ 10 questions</span>
+        <span>🏆 Scored</span>
+      </div>
+      <button id="quiz-start-btn" class="btn-primary large">Start Quiz →</button>
+    </div>
+    <div class="quiz-question-screen" id="quiz-question-screen" style="display:none">
+      <div class="quiz-progress-bar"><div id="quiz-progress-fill"></div></div>
+      <div class="quiz-counter"><span id="quiz-current">1</span> / <span id="quiz-total">10</span></div>
+      <div class="quiz-question-card">
+        <p class="quiz-category-tag" id="quiz-q-tag">Vocabulary</p>
+        <h3 id="quiz-question-text"></h3>
+        <div class="quiz-options" id="quiz-options"></div>
+        <div class="quiz-explanation" id="quiz-explanation" style="display:none"></div>
+        <button id="quiz-next-btn" class="btn-primary" style="display:none">Next →</button>
+      </div>
+    </div>
+    <div class="quiz-result-screen" id="quiz-result-screen" style="display:none">
+      <div class="result-circle">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" class="circle-bg"/>
+          <circle cx="50" cy="50" r="40" class="circle-fill" id="result-circle-fill"/>
+        </svg>
+        <div class="result-score-text"><span id="result-score">0</span><small>/10</small></div>
+      </div>
+      <h3 id="result-title">Great job!</h3>
+      <p id="result-message"></p>
+      <div class="result-review" id="result-review"></div>
+      <div class="result-actions">
+        <button id="quiz-retry-btn" class="btn-secondary">↺ Try Again</button>
+        <button id="quiz-next-quiz-btn" class="btn-primary">Next Quiz →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 9 — PHRASES -->
+<section id="phrases" class="section">
+  <div class="section-header">
+    <h2>💬 Essential Phrases & Tips</h2>
+    <p>Ready-to-use phrases for every interview situation. Click a card to flip it.</p>
+  </div>
+  <div class="phrases-filter" id="phrases-filter">
+    <button class="filter-tab active" data-pcat="all">All</button>
+    <button class="filter-tab" data-pcat="opening">Opening</button>
+    <button class="filter-tab" data-pcat="strength">Strengths</button>
+    <button class="filter-tab" data-pcat="clarify">Clarifying</button>
+    <button class="filter-tab" data-pcat="difficult">Difficult Qs</button>
+    <button class="filter-tab" data-pcat="closing">Closing</button>
+  </div>
+  <div class="phrases-grid" id="phrases-grid"></div>
+</section>
+
+<!-- SECTION 10 — PRICING -->
+<section id="pricing" class="section">
+  <div class="section-header">
+    <h2>💎 Choose Your Growth Path</h2>
+    <p>Flexible plans for candidates, schools, and companies who are serious about English.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="p-header">
+        <h3>Free</h3>
+        <div class="price">$0<span>/mo</span></div>
+      </div>
+      <ul class="p-features">
+        <li>✅ 5 AI Sessions / month</li>
+        <li>✅ Basic Question Bank</li>
+        <li>✅ Pronunciation Guide</li>
+        <li>✅ Idioms Dictionary</li>
+        <li>❌ No Listening Exercises</li>
+        <li>❌ No Speaking Timer</li>
+      </ul>
+      <button class="btn-secondary full-width">Get Started</button>
+    </div>
+    <div class="price-card featured">
+      <div class="featured-badge">MOST POPULAR</div>
+      <div class="p-header">
+        <h3>Pro</h3>
+        <div class="price">$19<span>/mo</span></div>
+      </div>
+      <ul class="p-features">
+        <li>✅ Unlimited AI Sessions</li>
+        <li>✅ 100+ Real Question Bank</li>
+        <li>✅ Full STAR Feedback</li>
+        <li>✅ Listening Comprehension</li>
+        <li>✅ Speaking Timer Challenges</li>
+        <li>✅ Writing Templates</li>
+        <li>✅ Voice Interaction (TTS)</li>
+        <li>✅ Professional Certificate</li>
+      </ul>
+      <button class="btn-primary full-width">Upgrade to Pro</button>
+    </div>
+    <div class="price-card">
+      <div class="p-header">
+        <h3>Enterprise</h3>
+        <div class="price">Custom</div>
+      </div>
+      <ul class="p-features">
+        <li>✅ Bulk Licenses for Schools/Teams</li>
+        <li>✅ Custom Question Design</li>
+        <li>✅ Dedicated HR Dashboard</li>
+        <li>✅ Progress Reports per Student</li>
+        <li>✅ White-label Branding</li>
+        <li>✅ API Access</li>
+      </ul>
+      <button class="btn-secondary full-width">Contact Sales</button>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 11 — PROGRESS -->
+<section id="progress" class="section">
+  <div class="section-header">
+    <h2>📊 Your Progress</h2>
+    <p>Track your practice sessions, quiz scores, and daily streak.</p>
+  </div>
+  <div class="progress-grid">
+    <div class="progress-card big">
+      <h3>🔥 Daily Streak</h3>
+      <div class="streak-display">
+        <span class="streak-number" id="prog-streak">0</span>
+        <span class="streak-label">days in a row</span>
+      </div>
+      <div class="streak-calendar" id="streak-calendar"></div>
+    </div>
+    <div class="progress-card">
+      <h3>💬 Chat Sessions</h3>
+      <div class="big-num" id="prog-sessions">0</div>
+      <p class="card-sub">Total practice sessions</p>
+    </div>
+    <div class="progress-card">
+      <h3>📝 Quizzes Taken</h3>
+      <div class="big-num" id="prog-quizzes">0</div>
+      <p class="card-sub">Completed quizzes</p>
+    </div>
+    <div class="progress-card">
+      <h3>🏆 Best Quiz Score</h3>
+      <div class="big-num" id="prog-best">—</div>
+      <p class="card-sub">Out of 10 points</p>
+    </div>
+    <div class="progress-card full-width">
+      <h3>📈 Quiz History</h3>
+      <div class="quiz-history" id="quiz-history">
+        <p class="empty-state">No quizzes completed yet. Go practice!</p>
+      </div>
+    </div>
+    <div class="progress-card full-width">
+      <h3>⚙️ Settings</h3>
+      <div class="settings-row">
+        <button id="reset-progress-btn" class="btn-danger">🗑️ Reset All Progress</button>
+        <button id="export-progress-btn" class="btn-secondary">⬇️ Export Data</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p><strong>OpenFluent AI</strong> — Premium English Interview Coaching. Pronunciation · Listening · Writing · AI Coach. Powered by <a href="https://anthropic.com" target="_blank">Claude</a>. © 2026</p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" style="display:none">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
