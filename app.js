@@ -905,6 +905,8 @@ async function startInterview() {
   document.getElementById('start-interview-btn').style.display = 'none';
   document.getElementById('send-btn').style.display = 'flex';
   document.getElementById('next-question-btn').style.display = 'flex';
+  // 🎤 Show mic button if speech is supported
+  enableMicButton();
 
   state.progress.sessions++;
   updateStreak();
@@ -998,7 +1000,303 @@ document.getElementById('new-session-btn').addEventListener('click', () => {
   document.getElementById('start-interview-btn').style.display = 'flex';
   document.getElementById('send-btn').style.display = 'none';
   document.getElementById('next-question-btn').style.display = 'none';
+  document.getElementById('mic-btn').style.display = 'none';
+  document.getElementById('speech-analysis').style.display = 'none';
   showToast('New session ready!', 'info');
+});
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  🎤 SPEECH-TO-TEXT + FILLER WORDS ANALYSIS MODULE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// Filler words list (English)
+const FILLER_WORDS = [
+  'um', 'uh', 'er', 'ah', 'eh', 'hmm', 'hm',
+  'like', 'so', 'well', 'okay', 'ok',
+  'you know', 'i mean', 'kind of', 'sort of',
+  'basically', 'actually', 'literally', 'honestly',
+  'right', 'yeah'
+];
+
+// Strong filler words (most professional concern)
+const STRONG_FILLERS = ['um', 'uh', 'er', 'like', 'you know', 'i mean'];
+
+// Speech state
+const speechState = {
+  recognition: null,
+  isRecording: false,
+  startTime: null,
+  transcript: '',
+  recTimerInterval: null,
+  isSupported: false
+};
+
+// Initialize Web Speech API
+function initSpeechRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    speechState.isSupported = false;
+    console.log('Speech Recognition not supported in this browser');
+    return false;
+  }
+
+  speechState.recognition = new SpeechRecognition();
+  speechState.recognition.continuous = true;
+  speechState.recognition.interimResults = true;
+  speechState.recognition.lang = 'en-US';
+  speechState.isSupported = true;
+
+  speechState.recognition.onresult = (event) => {
+    let interim = '';
+    let final = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const t = event.results[i][0].transcript;
+      if (event.results[i].isFinal) final += t + ' ';
+      else interim += t;
+    }
+    if (final) speechState.transcript += final;
+    // Live preview in chat input
+    const input = document.getElementById('chat-input');
+    input.value = (speechState.transcript + interim).trim();
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 150) + 'px';
+  };
+
+  speechState.recognition.onerror = (event) => {
+    console.error('Speech recognition error:', event.error);
+    if (event.error === 'not-allowed') {
+      showToast('🎤 Please allow microphone access', 'error');
+    } else if (event.error === 'no-speech') {
+      // Ignore - user just paused
+    } else {
+      showToast('Speech error: ' + event.error, 'error');
+    }
+    stopRecording();
+  };
+
+  speechState.recognition.onend = () => {
+    // Auto-restart if still recording (handles natural pauses)
+    if (speechState.isRecording) {
+      try { speechState.recognition.start(); } catch(e) { /* already started */ }
+    }
+  };
+
+  return true;
+}
+
+// Toggle recording (click to start/stop)
+function toggleRecording() {
+  if (!speechState.isSupported) {
+    showToast('Speech recognition not supported in this browser. Use Chrome or Edge.', 'error');
+    return;
+  }
+  if (speechState.isRecording) {
+    stopRecording();
+  } else {
+    startRecording();
+  }
+}
+
+function startRecording() {
+  if (!speechState.recognition) return;
+
+  // Clear input + state
+  document.getElementById('chat-input').value = '';
+  speechState.transcript = '';
+  speechState.startTime = Date.now();
+  speechState.isRecording = true;
+
+  // Update UI
+  const btn = document.getElementById('mic-btn');
+  btn.classList.add('recording');
+  btn.innerHTML = '⏹ Stop & Send';
+  document.getElementById('recording-indicator').style.display = 'flex';
+  document.getElementById('speech-analysis').style.display = 'none';
+
+  // Start timer
+  updateRecTimer();
+  speechState.recTimerInterval = setInterval(updateRecTimer, 100);
+
+  try {
+    speechState.recognition.start();
+    showToast('🎤 Speak now! Click stop when done.', 'info');
+  } catch (e) {
+    console.error('Start error:', e);
+  }
+}
+
+function stopRecording() {
+  if (!speechState.isRecording) return;
+  speechState.isRecording = false;
+
+  try { speechState.recognition.stop(); } catch(e) {}
+
+  clearInterval(speechState.recTimerInterval);
+
+  // Update UI
+  const btn = document.getElementById('mic-btn');
+  btn.classList.remove('recording');
+  btn.innerHTML = '🎤 Hold to Speak';
+  document.getElementById('recording-indicator').style.display = 'none';
+
+  const duration = (Date.now() - speechState.startTime) / 1000;
+  const text = speechState.transcript.trim();
+
+  if (text.length < 3) {
+    showToast('No speech detected. Try again!', 'error');
+    return;
+  }
+
+  // Analyze the speech
+  analyzeSpeech(text, duration);
+}
+
+function updateRecTimer() {
+  if (!speechState.startTime) return;
+  const elapsed = (Date.now() - speechState.startTime) / 1000;
+  const m = Math.floor(elapsed / 60);
+  const s = Math.floor(elapsed % 60);
+  document.getElementById('rec-timer').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+// Detect filler words in transcript
+function detectFillerWords(text) {
+  const lower = text.toLowerCase();
+  const found = {};
+  let total = 0;
+
+  FILLER_WORDS.forEach(filler => {
+    // Word boundary regex (handles "um" but not "umbrella")
+    const escaped = filler.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`\\b${escaped}\\b`, 'gi');
+    const matches = lower.match(regex);
+    if (matches && matches.length > 0) {
+      found[filler] = matches.length;
+      total += matches.length;
+    }
+  });
+
+  return { found, total };
+}
+
+// Analyze speech and show results
+function analyzeSpeech(text, durationSec) {
+  const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+  const minutes = durationSec / 60;
+  const wpm = minutes > 0 ? Math.round(wordCount / minutes) : 0;
+  const fillers = detectFillerWords(text);
+  const fillerRate = wordCount > 0 ? (fillers.total / wordCount) * 100 : 0;
+
+  // Update stats
+  document.getElementById('stat-duration').textContent = `${Math.round(durationSec)}s`;
+  document.getElementById('stat-words').textContent = wordCount;
+  document.getElementById('stat-wpm').textContent = wpm;
+  document.getElementById('stat-fillers').textContent = fillers.total;
+
+  // Color code WPM card
+  const wpmCard = document.getElementById('stat-wpm').closest('.analysis-stat');
+  wpmCard.classList.remove('warning', 'good', 'danger');
+  if (wpm >= 130 && wpm <= 170) wpmCard.classList.add('good');
+  else if (wpm < 100 || wpm > 200) wpmCard.classList.add('danger');
+  else wpmCard.classList.add('warning');
+
+  // Color code filler card
+  const fillerCard = document.getElementById('stat-fillers-card');
+  fillerCard.classList.remove('warning', 'good', 'danger');
+  if (fillerRate < 2) fillerCard.classList.add('good');
+  else if (fillerRate > 5) fillerCard.classList.add('danger');
+  else fillerCard.classList.add('warning');
+
+  // Show filler details if any found
+  const fillerDetail = document.getElementById('filler-detail');
+  if (fillers.total > 0) {
+    const sorted = Object.entries(fillers.found).sort((a,b) => b[1] - a[1]);
+    document.getElementById('filler-list').innerHTML = sorted.map(([word, count]) =>
+      `<span class="filler-chip">"${word}"<span class="count">${count}</span></span>`
+    ).join('');
+    fillerDetail.style.display = 'block';
+  } else {
+    fillerDetail.style.display = 'none';
+  }
+
+  // Generate text feedback
+  generateSpeechFeedback(wordCount, wpm, fillers, durationSec);
+
+  // Show panel
+  document.getElementById('speech-analysis').style.display = 'block';
+
+  // Auto-fill input with transcript so user can edit & send
+  const input = document.getElementById('chat-input');
+  input.value = text;
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 150) + 'px';
+  input.focus();
+
+  showToast('✅ Speech analyzed! Edit and send when ready.', 'success');
+}
+
+function generateSpeechFeedback(wordCount, wpm, fillers, duration) {
+  const feedback = [];
+
+  // Duration feedback
+  if (duration < 15) {
+    feedback.push({ icon: '⏱️', text: 'Your answer was very short. Aim for 30-90 seconds for behavioral questions.' });
+  } else if (duration > 180) {
+    feedback.push({ icon: '⏱️', text: 'Long answer! Try to keep responses under 2 minutes for most questions.' });
+  } else {
+    feedback.push({ icon: '✅', text: `Great length (${Math.round(duration)}s) — within ideal interview timing.` });
+  }
+
+  // WPM feedback
+  if (wpm < 100) {
+    feedback.push({ icon: '🐢', text: `Speaking pace is slow (${wpm} wpm). Aim for 130-170 wpm for natural delivery.` });
+  } else if (wpm > 180) {
+    feedback.push({ icon: '🏃', text: `Speaking too fast (${wpm} wpm). Slow down to 130-170 wpm — clarity matters more than speed.` });
+  } else if (wpm >= 130 && wpm <= 170) {
+    feedback.push({ icon: '🎯', text: `Perfect pace (${wpm} wpm)! This is the ideal range for native-sounding delivery.` });
+  } else {
+    feedback.push({ icon: '👍', text: `Good pace (${wpm} wpm). Try to land between 130-170 for the smoothest flow.` });
+  }
+
+  // Filler words feedback
+  const fillerRate = wordCount > 0 ? (fillers.total / wordCount) * 100 : 0;
+  if (fillers.total === 0) {
+    feedback.push({ icon: '🌟', text: 'Zero filler words! Outstanding clarity and confidence.' });
+  } else if (fillerRate < 2) {
+    feedback.push({ icon: '✨', text: `Only ${fillers.total} filler words — excellent control!` });
+  } else if (fillerRate < 5) {
+    feedback.push({ icon: '⚠️', text: `${fillers.total} filler words (${fillerRate.toFixed(1)}%). A bit high — try pausing instead.` });
+  } else {
+    feedback.push({ icon: '🚨', text: `${fillers.total} filler words (${fillerRate.toFixed(1)}%) — too many. Pauses sound more confident than "um".` });
+  }
+
+  // Word count feedback
+  if (wordCount < 30) {
+    feedback.push({ icon: '📝', text: 'Add more detail with the STAR method (Situation, Task, Action, Result).' });
+  }
+
+  document.getElementById('speech-feedback').innerHTML = feedback.map(f =>
+    `<div class="feedback-item"><span>${f.icon}</span><span>${f.text}</span></div>`
+  ).join('');
+}
+
+function closeSpeechAnalysis() {
+  document.getElementById('speech-analysis').style.display = 'none';
+}
+
+// Show mic button when interview starts
+function enableMicButton() {
+  if (!speechState.isSupported) return;
+  document.getElementById('mic-btn').style.display = 'inline-flex';
+}
+
+// Hook up mic button
+document.addEventListener('DOMContentLoaded', () => {
+  const micBtn = document.getElementById('mic-btn');
+  if (micBtn) {
+    micBtn.addEventListener('click', toggleRecording);
+  }
 });
 
 // INITIALIZATION
@@ -1018,6 +1316,9 @@ function initAll() {
   updateHeroStats();
   updateStreak();
   initQuizUI();
+
+  // Initialize speech recognition
+  initSpeechRecognition();
 
   document.getElementById('hero-start-btn').addEventListener('click', e => {
     e.preventDefault();

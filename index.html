@@ -55,6 +55,7 @@
     </div>
     <div class="hero-modules">
       <span class="module-pill">🤖 AI Coach</span>
+      <span class="module-pill new-pill" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;">🎤 Speech AI ✨</span>
       <span class="module-pill">🎙️ Pronunciation</span>
       <span class="module-pill">🎧 Listening</span>
       <span class="module-pill">💡 Idioms</span>
@@ -66,8 +67,8 @@
   <div class="hero-visual">
     <div class="chat-preview">
       <div class="chat-msg bot"><span class="avatar">🤖</span><p>Tell me about yourself and your background.</p></div>
-      <div class="chat-msg user"><span class="avatar">👤</span><p>I'm a software developer with 3 years of experience...</p></div>
-      <div class="chat-msg bot feedback"><span class="avatar">🤖</span><p>✅ Good start! Try adding a specific achievement with metrics.</p></div>
+      <div class="chat-msg user"><span class="avatar" style="background: #ef4444; color: white;">🎤</span><p><em>(Speaking) "I'm a software developer with 3 years..."</em></p></div>
+      <div class="chat-msg bot feedback"><span class="avatar" style="background: var(--bg3);">📊</span><p>✅ 145 wpm · 2 filler words · Great pace!</p></div>
     </div>
   </div>
 </section>
@@ -135,12 +136,62 @@
       <div class="chat-typing" id="chat-typing" style="display:none">
         <span></span><span></span><span></span>
       </div>
+
+      <!-- 🎤 NEW: Speech Analysis Panel (shows after recording) -->
+      <div class="speech-analysis" id="speech-analysis" style="display:none">
+        <div class="analysis-header">
+          <h4>🎤 Speech Analysis</h4>
+          <button class="icon-btn small" onclick="closeSpeechAnalysis()">✕</button>
+        </div>
+        <div class="analysis-grid">
+          <div class="analysis-stat">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-value" id="stat-duration">0s</div>
+            <div class="stat-name">Duration</div>
+          </div>
+          <div class="analysis-stat">
+            <div class="stat-icon">📝</div>
+            <div class="stat-value" id="stat-words">0</div>
+            <div class="stat-name">Words</div>
+          </div>
+          <div class="analysis-stat">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-value" id="stat-wpm">0</div>
+            <div class="stat-name">Words/min</div>
+          </div>
+          <div class="analysis-stat warning" id="stat-fillers-card">
+            <div class="stat-icon">😬</div>
+            <div class="stat-value" id="stat-fillers">0</div>
+            <div class="stat-name">Filler Words</div>
+          </div>
+        </div>
+        <div class="filler-detail" id="filler-detail" style="display:none">
+          <strong>Filler words detected:</strong>
+          <div id="filler-list"></div>
+          <p class="filler-tip">💡 Try replacing with brief pauses or "Let me think about that..."</p>
+        </div>
+        <div class="speech-feedback" id="speech-feedback"></div>
+      </div>
+
       <div class="chat-input-area">
         <textarea id="chat-input" placeholder="Type your answer here... (Shift+Enter for new line)" rows="2"></textarea>
         <div class="chat-actions">
           <button id="start-interview-btn" class="btn-primary">▶ Start Interview</button>
           <button id="send-btn" class="btn-primary" style="display:none">Send ↑</button>
+          <!-- 🎤 NEW: Microphone button for speech-to-text -->
+          <button id="mic-btn" class="btn-mic" style="display:none" title="Hold to record your answer">
+            🎤 Hold to Speak
+          </button>
           <button id="next-question-btn" class="btn-secondary" style="display:none">Next Question →</button>
+        </div>
+        <!-- 🎤 NEW: Recording indicator -->
+        <div class="recording-indicator" id="recording-indicator" style="display:none">
+          <div class="rec-pulse"></div>
+          <span>Recording... <strong id="rec-timer">0:00</strong></span>
+          <div class="rec-waveform">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
         </div>
       </div>
     </div>

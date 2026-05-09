@@ -413,3 +413,248 @@ footer{text-align:center;padding:2.5rem 1.5rem;color:var(--text2);font-size:.85r
   .listening-card-header{flex-direction:column}
   .player-controls{flex-wrap:wrap}
 }
+
+/* ═══════════════════════════════════════════
+   🎤 SPEECH-TO-TEXT & ANALYSIS MODULE
+═══════════════════════════════════════════ */
+
+/* Mic Button */
+.btn-mic {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  padding: .65rem 1.2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--font);
+  transition: all var(--transition);
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 4px 4px 0px #8a3a3a;
+}
+.btn-mic:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #8a3a3a;
+}
+.btn-mic.recording {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  animation: pulse-record 1.2s ease-in-out infinite;
+}
+@keyframes pulse-record {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, .7); }
+  50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+}
+
+/* Recording Indicator */
+.recording-indicator {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .75rem 1rem;
+  background: rgba(239, 68, 68, .1);
+  border: 1px solid rgba(239, 68, 68, .3);
+  border-radius: var(--radius-sm);
+  margin-top: .75rem;
+  font-size: .9rem;
+  color: var(--text);
+}
+.rec-pulse {
+  width: 12px;
+  height: 12px;
+  background: #ef4444;
+  border-radius: 50%;
+  animation: pulse-dot 1s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .5; transform: scale(.8); }
+}
+.rec-waveform {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+  height: 24px;
+}
+.rec-waveform span {
+  width: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: wave 1.2s ease-in-out infinite;
+}
+.rec-waveform span:nth-child(1) { animation-delay: -1.2s; height: 30%; }
+.rec-waveform span:nth-child(2) { animation-delay: -1.0s; height: 50%; }
+.rec-waveform span:nth-child(3) { animation-delay: -0.8s; height: 80%; }
+.rec-waveform span:nth-child(4) { animation-delay: -0.6s; height: 60%; }
+.rec-waveform span:nth-child(5) { animation-delay: -0.4s; height: 90%; }
+.rec-waveform span:nth-child(6) { animation-delay: -0.2s; height: 40%; }
+.rec-waveform span:nth-child(7) { animation-delay: 0s;    height: 70%; }
+.rec-waveform span:nth-child(8) { animation-delay: -0.3s; height: 50%; }
+.rec-waveform span:nth-child(9) { animation-delay: -0.5s; height: 80%; }
+.rec-waveform span:nth-child(10){ animation-delay: -0.7s; height: 30%; }
+@keyframes wave {
+  0%, 100% { transform: scaleY(.5); }
+  50% { transform: scaleY(1.5); }
+}
+
+/* Speech Analysis Panel */
+.speech-analysis {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin: 0 1.25rem 1rem;
+  animation: slideDown .3s ease;
+  box-shadow: var(--card-shadow);
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.analysis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.analysis-header h4 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+.analysis-stat {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: .85rem;
+  text-align: center;
+  transition: all var(--transition);
+}
+.analysis-stat.warning {
+  background: rgba(251, 191, 36, .1);
+  border-color: rgba(251, 191, 36, .4);
+}
+.analysis-stat.good {
+  background: rgba(0, 212, 170, .08);
+  border-color: rgba(0, 212, 170, .3);
+}
+.analysis-stat.danger {
+  background: rgba(239, 68, 68, .08);
+  border-color: rgba(239, 68, 68, .3);
+}
+.stat-icon {
+  font-size: 1.4rem;
+  margin-bottom: .35rem;
+}
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+.analysis-stat.warning .stat-value { color: #fbbf24; }
+.analysis-stat.good    .stat-value { color: #00d4aa; }
+.analysis-stat.danger  .stat-value { color: #ef4444; }
+.stat-name {
+  font-size: .72rem;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-top: .3rem;
+}
+
+.filler-detail {
+  background: rgba(251, 191, 36, .08);
+  border: 1px solid rgba(251, 191, 36, .25);
+  border-radius: var(--radius-sm);
+  padding: .9rem 1rem;
+  font-size: .88rem;
+  margin-bottom: .75rem;
+}
+.filler-detail strong {
+  color: #fbbf24;
+  display: block;
+  margin-bottom: .5rem;
+}
+#filler-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin: .5rem 0;
+}
+.filler-chip {
+  background: rgba(251, 191, 36, .15);
+  color: #fbbf24;
+  padding: .2rem .65rem;
+  border-radius: 50px;
+  font-size: .78rem;
+  font-weight: 600;
+}
+.filler-chip .count {
+  background: #fbbf24;
+  color: #000;
+  margin-left: .35rem;
+  padding: 0 .4rem;
+  border-radius: 10px;
+  font-size: .7rem;
+}
+.filler-tip {
+  font-size: .82rem;
+  color: var(--text2);
+  margin-top: .5rem;
+  font-style: italic;
+}
+
+.speech-feedback {
+  font-size: .9rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+.speech-feedback .feedback-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.speech-feedback .feedback-item:last-child {
+  border-bottom: none;
+}
+
+/* Mic browser support warning */
+.mic-not-supported {
+  background: rgba(239, 68, 68, .08);
+  border: 1px solid rgba(239, 68, 68, .25);
+  border-radius: var(--radius-sm);
+  padding: .75rem 1rem;
+  font-size: .85rem;
+  color: var(--text2);
+  margin-top: .75rem;
+}
+
+@media(max-width:640px){
+  .analysis-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* New pill highlight */
+.module-pill.new-pill {
+  background: linear-gradient(135deg, rgba(239, 68, 68, .15), rgba(239, 68, 68, .25));
+  border-color: rgba(239, 68, 68, .5);
+  color: #ef4444;
+  animation: pulse-new 2s ease-in-out infinite;
+  font-weight: 700;
+}
+@keyframes pulse-new {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, .3); }
+  50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+}
